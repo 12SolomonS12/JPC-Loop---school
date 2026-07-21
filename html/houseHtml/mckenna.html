@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Page metadata and stylesheet. -->
+    <title>McKenna | JPC Loop</title>
+    <link rel="stylesheet" href="../../style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="McKenna">
+
+    <!-- Header navigation shown at the top of the feed page. -->
+    <header>
+        <nav class="navbar">
+            <h2 class="logo"><a href="../home.html"><img src="../../images/jpcLoopLogo.png" alt="JPC Loop"></a></h2>
+            <ul>
+                <li><a href="../home.html">Home</a></li>
+                <li><a href="../feed.html">Feed</a></li>
+                <li><a href="../news.html">News</a></li>
+                <li><a href="../houses.html">Houses</a></li>
+                <li><a href="../gallery.html">Gallery</a></li>
+                <li><a href="../guidelines.html">Guidelines</a></li>
+                <li><a class="signin" href="../signin.html">Sign in</a></li>
+            </ul>
+        </nav>
+    </header>
+
+        <!-- Main News page content. -->
+    <main class="mckenna-main">
+
+        <!-- Grey heading bar with the page title and add post button. -->
+        <section class="mckenna-heading">
+            <h1>McKenna</h1>
+            <a href="../houses.html" class="back-button">Back to Houses</a>
+        </section>
+
+        <section class="house-info mckenna-info">
+            <div class = "house-info-text">
+                <h2>About McKenna House</h2>
+                <p>
+                    McKenna House is JPC’s blue house, named after Father Daniel McKenna. Father McKenna was a Mill Hill Missionary from Ireland who came to New Zealand after becoming a priest in 1939. He became the first parish priest of St Mary’s Parish in Rotorua and played an important role in developing Catholic education in the area, including helping establish MacKillop College and Edmund Rice College, which later became John Paul College. McKenna House carries this legacy through service, leadership, and involvement in school life.
+
+                </p>
+            </div>
+
+            <div class="house-info-icon">
+                <img src="../../images/houses/mckennaIcon.jpg" alt="McKenna House icon">
+            </div>
+        </section>
+            <section class="house-posts">
+            <div class = "house-posts-heading">
+                <h2>McKenna House Feed</h2>
+                <button class="add-post-button" id="toggle-post-form" type="button">Add house post</button>
+            </div>
+
+        <div class="post-form-pannel" id="post-form-pannel">
+            <form class="post-form" id="post-form">
+                <label for="post-title">Post title</label>
+                <input class="post-title" id="post-title" type="text" placeholder="Enter post title">
+
+                <label for="post-description">Post description</label>
+                <textarea class="post-description" id="post-description" placeholder="Write your post"></textarea>
+
+                <button class="primary-button" type="submit">Post</button>
+            </form>
+        </div>
+
+            <section class="house-feed-list">
+                <article class="house-feed-post">
+                    <h2>No house posts yet</h2>
+                    <p>McKenna house posts will appear here once this feature is connected</p>
+                </article>
+            </section>
+        </section>
+    </main>
+<script src="../../js/addPost.js"></script>
+</body>
+</html>
