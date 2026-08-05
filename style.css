@@ -21,6 +21,33 @@ body {
     min-height: 100vh;
     color: var(--text);
     background-color: var(--background);
+    overflow-x: hidden;
+}
+
+@keyframes page-slide-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes page-slide-in-reverse {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.houses:target main {
+    animation-name: page-slide-in-reverse;
+}
+
+main {
+    animation: page-slide-in 0.35s ease-out both;
 }
 
 h1 {
@@ -58,6 +85,11 @@ a {
 .logo img {
     height: 48px;
     display: block;
+    transition: transform 0.2s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
 }
 
 .navbar ul {
@@ -71,6 +103,7 @@ a {
     color: var(--text);
     font-weight: 700;
     text-decoration: none;
+    transition: color 0.1s ease;
 }
 
 .navbar a:hover {
@@ -82,10 +115,17 @@ a {
 .primary-button {
     background-color: var(--accent);
     color: var(--surface);
+    transition: background-color 0.2s ease;
+}
+
+.add-post-button:hover,
+.primary-button:hover {
+    background-color: var(--text);
 }
 
 .navbar a.signin {
     padding: 7px 13px;
+    transition: background-color 0.2s ease;
 }
 
 .navbar a.signin:hover {
@@ -212,6 +252,7 @@ input:disabled {
     padding: 12px;
     color: var(--surface);
     text-decoration: none;
+    transition: transform 0.15s ease;
 }
 
 .open-feed a {
@@ -301,7 +342,7 @@ input:disabled {
     overflow: hidden;
     opacity: 0;
     margin-bottom: 0;
-    transition: max-height 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
+    transition: max-height 0.5s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
 }
 
 .post-form-pannel.is-open {
@@ -462,6 +503,7 @@ input:disabled {
 .back-button:hover {
     background-color: var(--text);
     color: var(--surface);
+    transition: background-color 0.2s ease;
 }
 
 /* Sign-in page */
@@ -618,7 +660,7 @@ input:disabled {
     color: var(--text);
 }
 
-.google-button span {
+.google-logo {
     width: 24px;
     height: 24px;
     display: inline-flex;
@@ -628,6 +670,17 @@ input:disabled {
     background-color: var(--grey);
     color: var(--text);
     font-weight: 900;
+}
+
+.google-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s ease;
+}
+
+.google-button:hover .google-content {
+    transform: scale(1.04);
 }
 
 .auth-divider {
@@ -663,6 +716,11 @@ input:disabled {
     color: var(--accent);
     cursor: pointer;
     font-weight: 800;
+    transition: color 0.2s ease;
+}
+
+.auth-link-button:hover {
+    color: var(--text);
 }
 
 .auth-message.success {
