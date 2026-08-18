@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
+<script src="../js/gallery.js" defer></script>
+
 <body class="gallery">
 
     <!-- Header navigation shown at the top of the gallery page. -->
@@ -32,8 +34,51 @@
             <h1>Gallery</h1>
         </section>
 
-        <div class="page-content">
-            <p>There are currently no gallery posts.</p>
+        <div class="gallery-grid">
+
+            <section class="photo-gallery" data-gallery="juniors">
+                <h2>Juniors</h2>
+
+                <div class="gallery-viewer" id="juniors-viewer">
+                    <img src="../images/gallery/juniors/junior1.jfif" alt="Juniors photo 1">
+                    <img src="../images/gallery/juniors/junior2.jfif" alt="Juniors photo 2">
+                    <img src="../images/gallery/juniors/junior3.jfif" alt="Juniors photo 3">
+
+                    <button class="gallery-arrow-prev" type="button" aria-label="Previous junior image">
+                        &lt;
+                    </button>
+
+                    <button class="gallery-arrow-next" type="button" aria-label="Next junior image">
+                        &gt;
+                    </button>
+                    
+                    <div class="gallery-thumbnails">
+                        
+                    </div>
+                </div>
+            </section>
+
+            <section class="photo-gallery" data-gallery="seniors">
+                <h2>Seniors</h2>
+
+                <div class="gallery-viewer" id="seniors-viewer">
+                    <img src="../images/gallery/seniors/senior1.jfif" alt="Seniors photo 1">
+                    <img src="../images/gallery/seniors/senior2.jfif" alt="Seniors photo 2">
+                    <img src="../images/gallery/seniors/senior3.jfif" alt="Seniors photo 3">
+
+                    <button class="gallery-arrow-prev" type="button" aria-label="Previous senior image">
+                        &lt;
+                    </button>
+
+                    <button class="gallery-arrow-next" type="button" aria-label="Next senior image">
+                        &gt;
+                    </button>
+                    
+                    <div class="gallery-thumbnails">
+                        
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
