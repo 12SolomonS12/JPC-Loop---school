@@ -63,9 +63,15 @@ function showUser(user) {
     userPanel.hidden = !isSignedIn;
 
     if (user) {
-        userName.textContent = user.displayName || user.email.split("@")[0];
+        const displayName = user.displayName || user.email.split("@")[0];
+
+        userName.textContent = displayName;
+        localStorage.setItem("jpc-loop-user-name", displayName);
+    } else {
+        localStorage.removeItem("jpc-loop-user-name");
     }
-}
+
+    }
 
 panelButtons.forEach((button) => {
     button.addEventListener("click", () => {

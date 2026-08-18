@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body class="feed">
+<body class="feed" data-post-usage="feed" data-posts-class="feed-post">
 
     <!-- Header navigation shown at the top of the feed page. -->
     <header>
@@ -38,24 +38,17 @@
         <div class="post-form-pannel" id="post-form-pannel">
             <form class="post-form" id="post-form">
                 <label for="post-title">Post title</label>
-                <input class="post-title" id="post-title" type="text" placeholder="Enter post title">
+                <input class="post-title" id="post-title" type="text" placeholder="Enter post title" maxlength="80" required>
 
                 <label for="post-description">Post description</label>
-                <textarea class="post-description" id="post-description" placeholder="Write your post"></textarea>
+                <textarea class="post-description" id="post-description" placeholder="Write your post" maxlength="1000" required></textarea>
 
                 <button class="primary-button" type="submit">Post</button>
             </form>
         </div>
 
         <!-- Placeholder feed post area. -->
-        <div class="feed-list">
-
-            <article class="feed-post">
-                <h2>Welcome to the JPC Loop feed</h2>
-                <p>Posts will appear here once the feed feature is connected.</p>
-            </article>
-
-        </div>
+        <div class="feed-list" id="post-list"></div>
 
     </main>
 
