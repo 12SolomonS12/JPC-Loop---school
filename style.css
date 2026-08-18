@@ -433,7 +433,7 @@ input:disabled {
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
@@ -476,8 +476,7 @@ input:disabled {
     pointer-events: none;
 }
 
-.photo-gallery:hover .gallery-thumbnails,
-.photo-gallery:focus-within .gallery-thumbnails {
+.photo-gallery:hover .gallery-thumbnails{
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
