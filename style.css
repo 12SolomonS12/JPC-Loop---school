@@ -354,6 +354,25 @@ input:disabled {
     font-weight: 700;
 }
 
+.user-role {
+    margin-left: 6px;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.delete-post-button {
+    padding: 7px 10px;
+    border: 0;
+    background-color: var(--accent);
+    color: var(--surface);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.delete-post-button:hover {
+    background-color: var(--text);
+}
+
 /* Shared create post controls */
 
 .add-post-button {

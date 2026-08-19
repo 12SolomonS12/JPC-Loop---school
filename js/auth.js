@@ -10,6 +10,14 @@ import {
     updateProfile
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
+import {
+    doc,
+    getDoc,
+    getFirestore,
+    setDoc,
+    serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyBT6mGHTtYIrg3ZPRrr8r5hrjzSJwOeqY0",
     authDomain: "jpc-loop.firebaseapp.com",
@@ -20,7 +28,9 @@ const firebaseConfig = {
     measurementId: "G-0P5XQ3B5GE"
 };
 
-const auth = getAuth(initializeApp(firebaseConfig));
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 const schoolEmailEnding = "@jpc.school.nz";
 
 const authPanel = document.getElementById("auth-panel");
@@ -32,6 +42,7 @@ const signinSection = document.querySelector(".login");
 const registerSection = document.querySelector(".signup-container");
 const userPanel = document.getElementById("user-panel");
 const userName = document.getElementById("user-name");
+const userRole = document.getElementById("user-role");
 const signoutButton = document.getElementById("signout-button");
 const panelButtons = document.querySelectorAll("[data-panel]");
 const googleButtons = document.querySelectorAll(".google-button");
@@ -43,6 +54,30 @@ function isSchoolEmail(email) {
 function showMessage(text, type = "error") {
     message.textContent = text;
     message.className = `auth-message ${type}`;
+}
+
+async function saveUserDocument(user) {
+    const userReference = doc(db, "users", user.uid);
+    const userSnapshot = await getDoc(userReference);
+
+    const userData = {
+        displayName: user.displayName || user.email.split("@")[0],
+        email: user.email,
+        lastLogin: serverTimestamp(),
+    };
+
+    if (!userSnapshot.exists()) {
+        userData.role = "user";
+        userData.createdAt = serverTimestamp();
+    }
+
+    await setDoc(userReference, userData, { merge: true });
+
+    if (userSnapshot.exists()) {
+        return userSnapshot.data().role || "user";
+    }
+
+    return "user";
 }
 
 function showForm(panelName) {
@@ -121,6 +156,7 @@ registerForm.addEventListener("submit", async (event) => {
     try {
         const result = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(result.user, { displayName: name });
+        await saveUserDocument(result.user);
         showUser(result.user);
     } catch (error) {
         showMessage(error.message);
@@ -148,11 +184,20 @@ signoutButton.addEventListener("click", async () => {
     await signOut(auth);
 });
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user && !isSchoolEmail(user.email || "")) {
-        signOut(auth);
+        await signOut(auth);
         return;
     }
 
     showUser(user);
+
+    if (user) {
+        try {
+            const role = await saveUserDocument(user);
+            userRole.textContent = role === "admin" ? "Admin" : "User";
+        } catch (error) {
+            console.error("Error fetching user role:", error);
+        }
+    }
 });
