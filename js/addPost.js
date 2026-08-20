@@ -6,9 +6,16 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
+    addDoc,
+    collection,
+    deleteDoc,
     doc,
     getDoc,
     getFirestore,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -44,6 +51,9 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     currentRole = "guest";
 
+    toggleButton.hidden = true;
+    postFormPanel.classList.remove("is-open");
+
     if (!user) {
         console.log("User is not signed in.");
         return;
@@ -63,6 +73,13 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         console.log("Current role:", currentRole);
+
+        if (adminOnlyPage) {
+            toggleButton.hidden = currentRole !== "admin";
+        } else {
+            toggleButton.hidden = false;
+        }
+
         renderPosts();
     } catch (error) {
         console.error("Error fetching user role:", error);
@@ -70,16 +87,14 @@ onAuthStateChanged(auth, async (user) => {
 });
 const pageName = document.body.dataset.postUsage;
 const postClass = document.body.dataset.postsClass;
-const storageKey = `jpc-loop-${pageName}-posts`;
+const adminOnlyPage = document.body.dataset.adminOnly === "true";
 
-const savedPosts = localStorage.getItem(storageKey);
-let posts = savedPosts ? JSON.parse(savedPosts) : [];
+const postsReference = collection(db, "pages", pageName, "posts");
+const postsQuery = query(postsReference, orderBy("createdAt", "desc"));
 
-function savePosts() {
-    localStorage.setItem(storageKey, JSON.stringify(posts));
-}
+let posts = [];
 
-function createPostCard(post, index) {
+function createPostCard(post) {
     const article = document.createElement('article');
     const heading = document.createElement('h2');
     const description = document.createElement('p');
@@ -91,7 +106,11 @@ function createPostCard(post, index) {
     heading.textContent = post.title;
     description.textContent = post.description;
     date.className = 'post-date';
-    date.textContent = new Date(post.createdAt).toLocaleString();
+    if (post.createdAt) {
+        date.textContent = post.createdAt.toDate().toLocaleString();
+    } else {
+        date.textContent = "Just now";
+    }
 
     article.append(heading, description, postDetails);
 
@@ -108,16 +127,19 @@ function createPostCard(post, index) {
         deleteButton.className = 'delete-post-button';
         deleteButton.type = 'button';
 
-        deleteButton.addEventListener('click', () => {
-            const confirmDelete = confirm("Are you sure you want to delete this post?");
+        deleteButton.addEventListener('click', async () => {
+            const confirmed = confirm("Are you sure you want to delete this post?");
 
-            if (!confirmDelete) {
+            if (!confirmed) {
                 return;
             }
 
-            posts.splice(index, 1);
-            savePosts();
-            renderPosts();
+            try {
+                await deleteDoc(doc(db, "pages", pageName, "posts", post.id));
+            } catch (error) {
+                console.error("Could not delete the post:", error);
+                alert("The post could not be deleted.");
+            }
         });
 
         postDetails.append(deleteButton);
@@ -128,14 +150,41 @@ function createPostCard(post, index) {
 function renderPosts() {
     postList.innerHTML = '';
 
-    posts.forEach((post, index) => {
+    posts.forEach((post) => {
         const postCard = createPostCard(post);
         postList.appendChild(postCard);
     });
 }
 
-postForm.addEventListener('submit', (event) => {
+onSnapshot(
+    postsQuery,
+    (snapshot) => {
+        posts = snapshot.docs.map((postDocument) => {
+            return {
+                id: postDocument.id,
+                ...postDocument.data()
+            };
+        });
+
+        renderPosts();
+    },
+    (error) => {
+        console.error("Could not load posts:", error)
+    }
+);
+
+postForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    if (!currentUser) {
+        alert("You must be signed in to create a post.");
+        return;
+    }
+
+    if (adminOnlyPage && currentRole !== "admin") {
+        alert("Only administrators can create news posts.");
+        return;
+    }
 
     const title = titleInput.value.trim();
     const description = descriptionInput.value.trim();
@@ -144,27 +193,21 @@ postForm.addEventListener('submit', (event) => {
         return;
     }
 
-    const author = localStorage.getItem("jpc-loop-user-name");
+    const author = currentUser.displayName || currentUser.email.split("@")[0];
 
-    if (!author) {
-        alert("You must be signed in to create a post.");
-        return;
+    try {
+        await addDoc(postsReference, {
+            title: title,
+            description: description,
+            author: author,
+            authorId: currentUser.uid,
+            createdAt: serverTimestamp()
+        });
+
+        postForm.reset();
+        postFormPanel.classList.remove("is-open");
+    } catch (error) {
+        console.error("Could not create the post:", error)
+        alert("The post could not be created.");
     }
-
-    const newPost = {
-        title: title,
-        description: description,
-        author: author,
-        createdAt: new Date().toISOString()
-    };
-
-    posts.unshift(newPost);
-    savePosts();
-    renderPosts();
-
-    postForm.reset();
-    postFormPanel.classList.remove("is-open");
 });
-
-renderPosts();
-
