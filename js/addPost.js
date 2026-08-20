@@ -120,7 +120,9 @@ function createPostCard(post) {
     postDetails.className = "post-details";
     postDetails.append(date, author);
 
-    if (currentRole === "admin") {
+    const ownsPost = currentUser !== null && post.authorId === currentUser.uid;
+
+    if (currentRole === "admin" || ownsPost) {
         const deleteButton = document.createElement('button');
 
         deleteButton.textContent = 'Delete';
