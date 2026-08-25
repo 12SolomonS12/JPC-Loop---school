@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body class="laSalle">
+<body class="laSalle" data-post-usage="house-lasalle" data-posts-class="house-feed-post">
 
     <!-- Header navigation shown at the top of the feed page. -->
     <header>
@@ -58,23 +58,18 @@
         <div class="post-form-pannel" id="post-form-pannel">
             <form class="post-form" id="post-form">
                 <label for="post-title">Post title</label>
-                <input class="post-title" id="post-title" type="text" placeholder="Enter post title">
+                <input class="post-title" id="post-title" type="text" placeholder="Enter post title" maxlength="80" required>
 
                 <label for="post-description">Post description</label>
-                <textarea class="post-description" id="post-description" placeholder="Write your post"></textarea>
+                <textarea class="post-description" id="post-description" placeholder="Write your post" maxlength="1000" required></textarea>
 
                 <button class="primary-button" type="submit">Post</button>
             </form>
         </div>
 
-            <section class="house-feed-list">
-                <article class="house-feed-post">
-                    <h2>No house posts yet</h2>
-                    <p>La Salle house posts will appear here once this feature is connected</p>
-                </article>
-            </section>
+            <div class="house-feed-list" id="post-list"></div>
         </section>
     </main>
-<script src="../../js/addPost.js"></script>
+<script type="module" src="../../js/addPost.js"></script>
 </body>
 </html>

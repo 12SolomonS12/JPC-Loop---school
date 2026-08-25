@@ -35,6 +35,39 @@ const db = getFirestore(app);
 let currentUser = null;
 let currentRole = "guest";
 
+const blockedWords = [
+    "fuck",
+    "shit",
+    "bitch",
+    "asshole",
+    "cunt",
+    "nigger",
+    "nigga",
+    "hell",
+    "bullshit",
+    "chink",
+    "niger",
+    "crap",
+    "jerk",
+    "penis",
+    "vagina",
+    "cock",
+    "pussy",
+    "prick",
+]
+
+function containsBlockedWords(text) {
+    const cleanedText = ` ${text
+        .normalize("NFKD")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "")
+        .trim()} `;
+
+    return blockedWords.some((blockedWord) => {
+        return cleanedText.includes(blockedWord);
+    });
+}
+
 const toggleButton = document.getElementById('toggle-post-form');
 const postFormPanel = document.getElementById('post-form-pannel');
 
@@ -80,6 +113,8 @@ onAuthStateChanged(auth, async (user) => {
             toggleButton.hidden = false;
         }
 
+        hasScrolledToLinkedPost = false;
+
         renderPosts();
     } catch (error) {
         console.error("Error fetching user role:", error);
@@ -94,6 +129,8 @@ const postsQuery = query(postsReference, orderBy("createdAt", "desc"));
 
 let posts = [];
 
+let hasScrolledToLinkedPost = false;
+
 function createPostCard(post) {
     const article = document.createElement('article');
     const heading = document.createElement('h2');
@@ -102,8 +139,12 @@ function createPostCard(post) {
     const author = document.createElement('span');
     const postDetails = document.createElement('div');
 
+
     article.className = postClass;
+    article.id = `post-${post.id}`;
+    heading.className = 'post-title-text';
     heading.textContent = post.title;
+    description.className = 'post-description-text';
     description.textContent = post.description;
     date.className = 'post-date';
     if (post.createdAt) {
@@ -146,7 +187,58 @@ function createPostCard(post) {
 
         postDetails.append(deleteButton);
     }
+
+    article.addEventListener('click', (event) => {
+        if (event.target.closest("button")) {
+            return;
+        }
+
+        article.getAnimations().forEach((animation) => {
+            animation.cancel();
+        });
+
+        const startingHeight = article.offsetHeight;
+        article.classList.toggle("is-expanded");
+        const endingHeight = article.offsetHeight;
+        article.style.overflow = "hidden";
+        const animation = article.animate(
+            [
+                { height: `${startingHeight}px` },
+                { height: `${endingHeight}px` }
+        ],
+        {
+            duration: 300,
+            easing: "ease-in-out"
+        }
+            );
+        
+        animation.addEventListener("finish", () => {
+            article.style.overflow = "";
+        });
+    });
     return article;
+}
+
+function scrollToLinkedPost() {
+    if (hasScrolledToLinkedPost || !window.location.hash) {
+        return;
+    }
+
+    const targetId = window.location.hash.slice(1);
+    const targetPost = document.getElementById(targetId);
+
+    if (!targetPost) {
+        return;
+    }
+
+    hasScrolledToLinkedPost = true;
+
+    requestAnimationFrame(() => {
+        targetPost.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    });
 }
 
 function renderPosts() {
@@ -156,6 +248,8 @@ function renderPosts() {
         const postCard = createPostCard(post);
         postList.appendChild(postCard);
     });
+
+    scrollToLinkedPost();
 }
 
 onSnapshot(
@@ -192,6 +286,11 @@ postForm.addEventListener('submit', async (event) => {
     const description = descriptionInput.value.trim();
 
     if (!title || !description) {
+        return;
+    }
+
+    if (containsBlockedWords(title) || containsBlockedWords(description)) {
+        alert("Your post contains inappropriate language. Please remove any offensive words and try again.");
         return;
     }
 
