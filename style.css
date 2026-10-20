@@ -279,6 +279,27 @@ input:disabled {
     color: var(--surface);
 }
 
+.posting-callout {
+    width: min(900px, calc(100% - clamp(24px, 5vw, 32px)));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: 0 auto 24px;
+    padding: 16px;
+    border: 1px solid var(--grey);
+    background-color: var(--surface);
+}
+
+.posting-callout a {
+    padding: 10px 12px;
+    color: var(--surface);
+    background-color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
 .home-section {
     width: min(900px, calc(100% - clamp(24px, 5vw, 32px)));
     margin: 0 auto clamp(24px, 4vw, 32px);
@@ -688,11 +709,16 @@ input:disabled {
     background-color: var(--surface);
 }
 
+.house-info-icon {
+    width: 180px;
+    max-width: 100%;
+    justify-self: end;
+}
+
 .house-info {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items:center;
-    justify-content: space-between;
-    flex-wrap: wrap;
     gap: clamp(20px, 3vw, 32px);
     margin-bottom: clamp(24px, 4vw, 36px);
     padding: clamp(20px, 4vw, 28px);
@@ -1028,7 +1054,16 @@ input:disabled {
         width: 100%;
     }
 
+    .posting-callout {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .house-info {
+        grid-template-columns: 1fr;
+    }
+
     .house-info-icon {
-        margin: 0 auto;
+        justify-self: center;
     }
 }

@@ -37,6 +37,7 @@ let currentRole = "guest";
 
 const blockedWords = [
     "fuck",
+    "ass",
     "shit",
     "bitch",
     "asshole",
@@ -54,6 +55,7 @@ const blockedWords = [
     "cock",
     "pussy",
     "prick",
+    "schlong"
 ]
 
 function containsBlockedWords(text) {
